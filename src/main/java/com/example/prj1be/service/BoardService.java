@@ -34,4 +34,8 @@ public class BoardService {
 
         return true;
     }
+
+    public Board fetchPosts() {
+        return mapper.bringList();
+    }
 }

@@ -26,4 +26,10 @@ public class BoardController {
         }
     }
 
+    @GetMapping("list")
+    public Board boardlist() {
+        return service.fetchPosts();
+
+    }
+
 }
