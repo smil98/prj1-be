@@ -30,7 +30,9 @@ public class MemberController {
 
     @GetMapping(value="check", params = "id")
     public ResponseEntity checkId(String id) {
-        if(service.getId(id) == null) {
+        if(id.isBlank()) {
+            return ResponseEntity.noContent().build();
+        } else if(service.getId(id) == null) {
             return ResponseEntity.notFound().build();
         } else {
             return ResponseEntity.ok().build();
