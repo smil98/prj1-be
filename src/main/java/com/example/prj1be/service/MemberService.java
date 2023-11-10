@@ -14,4 +14,8 @@ public class MemberService {
     public boolean add(Member member) {
         return mapper.insert(member)==1;
     }
+
+    public String getId(String id) {
+        return mapper.selectId(id);
+    }
 }
