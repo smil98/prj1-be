@@ -34,4 +34,11 @@ public interface MemberMapper {
     ORDER BY inserted DESC
     """)
     List<Member> selectAllMembers();
+
+    @Select("""
+    SELECT *
+    FROM member
+    WHERE id = #{id}
+    """)
+    Member selectById(String id);
 }
