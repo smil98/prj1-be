@@ -3,6 +3,7 @@ package com.example.prj1be.controller;
 import com.example.prj1be.domain.Member;
 import com.example.prj1be.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -59,7 +60,15 @@ public class MemberController {
     public ResponseEntity<Member> view(String id) {
         Member member = service.getMember(id);
 
-        return null;
+        return ResponseEntity.ok(member);
+    }
+
+    @DeleteMapping()
+    public ResponseEntity delete(String id) {
+        if(service.deleteMember(id)) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.internalServerError().build();
     }
 
 
