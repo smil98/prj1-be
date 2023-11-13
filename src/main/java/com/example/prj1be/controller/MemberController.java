@@ -82,5 +82,16 @@ public class MemberController {
         }
     }
 
+    @GetMapping(value="checknic", params="nickName")
+    public ResponseEntity checkNick(String nickName) {
+        if(nickName.isBlank()) {
+            return ResponseEntity.noContent().build();
+        } else if (service.getNickName(nickName) == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok().build();
+        }
+    }
+
 
 }
