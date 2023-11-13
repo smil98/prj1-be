@@ -71,5 +71,16 @@ public class MemberController {
         return ResponseEntity.internalServerError().build();
     }
 
+    @PutMapping("edit")
+    public ResponseEntity edit(@RequestBody Member member) {
+        // TODO: check whether login / authentication done
+
+        if(service.update(member)) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
 
 }
