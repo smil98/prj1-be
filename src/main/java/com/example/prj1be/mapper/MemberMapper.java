@@ -9,7 +9,7 @@ import java.util.List;
 public interface MemberMapper {
 
     @Insert("""
-    INSERT INTO member (id, password, email)
+    INSERT INTO member (id, nickname, password, email)
     VALUES (#{id}, #{password}, #{email})
     """)
     int insert(Member member);
@@ -27,7 +27,7 @@ public interface MemberMapper {
     String selectEmail(String email);
 
     @Select("""
-    SELECT id, password, email, inserted
+    SELECT id, nickname, password, email, inserted
     FROM member
     ORDER BY inserted DESC
     """)
