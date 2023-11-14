@@ -15,8 +15,9 @@ public interface BoardMapper {
     int insert(Board board);
 
     @Select("""
-        SELECT id, title, writer, inserted
-        FROM board
+        SELECT b.id, b.title, m.nickName writer, b.inserted
+        FROM board b JOIN member m
+        ON b.writer = m.id
         ORDER BY id DESC
         """)
     List<Board> selectAll();
@@ -42,4 +43,10 @@ public interface BoardMapper {
     WHERE id = #{id}
     """)
     int update(Board board);
+
+    @Delete("""
+    DELETE FROM board
+    WHERE writer = #{writer}
+    """)
+    int deleteByWriter(String writer);
 }
