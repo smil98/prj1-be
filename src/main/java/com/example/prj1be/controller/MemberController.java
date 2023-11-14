@@ -54,6 +54,16 @@ public class MemberController {
             return ResponseEntity.ok().build();
         }
     }
+    @GetMapping(value="checknic", params="nickName")
+    public ResponseEntity checkNick(String nickName) {
+        if(nickName.isBlank()) {
+            return ResponseEntity.noContent().build();
+        } else if (service.getNickName(nickName) == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok().build();
+        }
+    }
 
     @GetMapping("list")
     public List<Member> list() {
@@ -62,6 +72,9 @@ public class MemberController {
 
     @GetMapping
     public ResponseEntity<Member> view(String id) {
+        // TODO : loged in? -> if not, 401
+        // TODO : authentication done? -> if not, 403
+
         Member member = service.getMember(id);
 
         return ResponseEntity.ok(member);
@@ -69,6 +82,9 @@ public class MemberController {
 
     @DeleteMapping()
     public ResponseEntity delete(String id) {
+        // TODO : loged in? -> if not, 401
+        // TODO : authentication done? -> if not, 403
+
         if(service.deleteMember(id)) {
             return ResponseEntity.ok().build();
         }
@@ -86,16 +102,6 @@ public class MemberController {
         }
     }
 
-    @GetMapping(value="checknic", params="nickName")
-    public ResponseEntity checkNick(String nickName) {
-        if(nickName.isBlank()) {
-            return ResponseEntity.noContent().build();
-        } else if (service.getNickName(nickName) == null) {
-            return ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.ok().build();
-        }
-    }
 
     @PostMapping("login")
     public ResponseEntity login(@RequestBody Member member, WebRequest request) {

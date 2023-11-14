@@ -28,7 +28,7 @@ public class BoardController {
         if(!service.validate(board)) {
             return ResponseEntity.badRequest().build();
         }
-        System.out.println("board = " + board);
+
         if(service.save(board, login)) {
             return ResponseEntity.ok().build();
         } else {
