@@ -67,4 +67,12 @@ public class MemberService {
     public String getNickName(String nickName) {
         return mapper.selectNickName(nickName);
     }
+
+    public boolean login(Member member) {
+        Member dbMember = mapper.selectById(member.getId());
+        if(dbMember != null && dbMember.getPassword().equals(member.getPassword())) {
+            return true;
+        }
+        return false;
+    }
 }
