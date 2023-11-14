@@ -19,10 +19,10 @@ public interface BoardMapper {
         b.title,
         b.writer,
         m.nickName, 
-        inserted
+        b.inserted
         FROM board b JOIN member m
         ON b.writer = m.id
-        ORDER BY id DESC
+        ORDER BY b.id DESC
         """)
     List<Board> selectAll();
 
@@ -33,9 +33,8 @@ public interface BoardMapper {
     b.writer,
     m.nickName,
     b.inserted
-    FROM board b JOIN member m
-    ON b.writer = m.id
-    WHERE id = #{id}
+    FROM board b JOIN member m ON b.writer = m.id
+    WHERE b.id = #{id}
     """)
     Board selectById(Integer id);
 
