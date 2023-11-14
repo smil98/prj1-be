@@ -15,7 +15,11 @@ public interface BoardMapper {
     int insert(Board board);
 
     @Select("""
-        SELECT b.id, b.title, m.nickName writer, b.inserted
+        SELECT b.id, 
+        b.title,
+        b.writer,
+        m.nickName, 
+        inserted
         FROM board b JOIN member m
         ON b.writer = m.id
         ORDER BY id DESC
@@ -23,8 +27,14 @@ public interface BoardMapper {
     List<Board> selectAll();
 
     @Select("""
-    SELECT id, title, content, writer, inserted
-    FROM board
+    SELECT b.id, 
+    b.title, 
+    b.content, 
+    b.writer,
+    m.nickName,
+    b.inserted
+    FROM board b JOIN member m
+    ON b.writer = m.id
     WHERE id = #{id}
     """)
     Board selectById(Integer id);
