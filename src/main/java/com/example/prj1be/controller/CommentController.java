@@ -63,16 +63,16 @@ public class CommentController {
         }
     }
 
-    @PutMapping("edit")
+    @PutMapping("edit/{id}")
     public ResponseEntity edit(@RequestBody Comment comment,
                                @SessionAttribute(value = "login", required = false) Member login) {
-
+        System.out.println("PutMapping : comment = " + comment);
         if(login == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         if (!service.hasAccess(comment.getId(), login)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // 403
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
         if (service.validate(comment)) {

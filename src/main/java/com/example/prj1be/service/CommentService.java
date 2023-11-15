@@ -53,6 +53,7 @@ public class CommentService {
     }
 
     public boolean update(Comment comment) {
-        return false;
+        System.out.println("Service comment = " + comment);
+        return mapper.update(comment)==1;
     }
 }

@@ -2,10 +2,7 @@ package com.example.prj1be.mapper;
 
 import com.example.prj1be.domain.Comment;
 import com.example.prj1be.domain.Member;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -36,4 +33,11 @@ public interface CommentMapper {
     WHERE id = #{commentId}
     """)
     int deleteById(Integer commentId);
+
+    @Update("""
+    UPDATE comment
+    SET comment = #{comment},
+    WHERE id = #{id}
+    """)
+    int update(Comment comment);
 }
