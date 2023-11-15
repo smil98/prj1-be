@@ -11,6 +11,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CommentService {
+    private final MemberService memberService;
     private final CommentMapper mapper;
 
     public boolean add(Comment comment, Member login) {
@@ -36,5 +37,22 @@ public class CommentService {
 
     public List<Comment> list(Integer boardId) {
         return mapper.selectByBoardId(boardId);
+    }
+
+    public boolean hasAccess(Integer commentId, Member login) {
+        if(memberService.isAdmin(login)) {
+            return true;
+        }
+        Comment comment = mapper.selectCommentById(commentId);
+
+        return comment.getMemberId().equals(login.getId());
+    }
+
+    public boolean remove(Integer commentId) {
+        return mapper.deleteById(commentId)==1;
+    }
+
+    public boolean update(Comment comment) {
+        return false;
     }
 }
