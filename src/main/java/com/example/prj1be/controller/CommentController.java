@@ -66,7 +66,7 @@ public class CommentController {
     @PutMapping("edit/{id}")
     public ResponseEntity edit(@RequestBody Comment comment,
                                @SessionAttribute(value = "login", required = false) Member login) {
-        System.out.println("PutMapping : comment = " + comment);
+
         if(login == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }

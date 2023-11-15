@@ -24,10 +24,6 @@ public class CommentService {
             return false;
         }
 
-        if (comment.getBoardId() == null || comment.getBoardId() < 1) {
-            return false;
-        }
-
         if (comment.getComment() == null || comment.getComment().isBlank()) {
             return false;
         }
@@ -53,7 +49,13 @@ public class CommentService {
     }
 
     public boolean update(Comment comment) {
-        System.out.println("Service comment = " + comment);
-        return mapper.update(comment)==1;
+        try {
+            System.out.println("Service comment = " + comment);
+            return mapper.update(comment) == 1;
+        } catch (Exception e) {
+            e.printStackTrace(); // Log the exception stack trace
+            return false;
+        }
     }
+
 }

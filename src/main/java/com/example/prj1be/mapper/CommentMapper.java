@@ -36,7 +36,7 @@ public interface CommentMapper {
 
     @Update("""
     UPDATE comment
-    SET comment = #{comment},
+    SET comment = #{comment}
     WHERE id = #{id}
     """)
     int update(Comment comment);
