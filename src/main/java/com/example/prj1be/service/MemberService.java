@@ -3,6 +3,7 @@ package com.example.prj1be.service;
 import com.example.prj1be.domain.Auth;
 import com.example.prj1be.domain.Member;
 import com.example.prj1be.mapper.BoardMapper;
+import com.example.prj1be.mapper.CommentMapper;
 import com.example.prj1be.mapper.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ public class MemberService {
 
     private final MemberMapper mapper;
     private final BoardMapper boardMapper;
+    private final CommentMapper commentMapper;
 
     public boolean add(Member member) {
         return mapper.insert(member)==1;
@@ -60,6 +62,7 @@ public class MemberService {
     public boolean deleteMember(String id) {
         //delete posts that this member wrote
         boardMapper.deleteByWriter(id);
+        commentMapper.deleteByMemberId(id);
         return mapper.deleteById(id)==1;
     }
 
