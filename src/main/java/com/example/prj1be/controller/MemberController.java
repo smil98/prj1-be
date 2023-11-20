@@ -89,7 +89,7 @@ public class MemberController {
     }
 
     @DeleteMapping()
-    public ResponseEntity delete(String id, @SessionAttribute(value = "login", required = false) Member login) {
+    public ResponseEntity delete(String id, HttpSession session, @SessionAttribute(value = "login", required = false) Member login) {
         // TODO : loged in? -> if not, 401
         // TODO : authentication done? -> if not, 403
 
@@ -102,6 +102,7 @@ public class MemberController {
         }
 
         if(service.deleteMember(id)) {
+            session.invalidate();
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.internalServerError().build();
