@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
-import software.amazon.awssdk.services.s3.model.PutObjectAclRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +35,7 @@ public class BoardService {
     private final S3Client s3;
 
     @Value("${aws.s3.bucket.name}")
-    private final String bucket;
+    private String bucket;
 
 
 
@@ -58,13 +58,13 @@ public class BoardService {
 
         String key = "prj1" + boardId + "/" + file.getOriginalFilename();
 
-        PutObjectAclRequest objectRequest = PutObjectAclRequest.builder()
+        PutObjectRequest objectRequest = PutObjectRequest.builder()
                 .bucket(bucket)
                 .key(key)
                 .acl(ObjectCannedACL.PUBLIC_READ)
                 .build();
 
-        s3.put(objectRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
+        s3.putObject(objectRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
     }
 
     public boolean validate(Board board) {
