@@ -34,6 +34,9 @@ public class BoardService {
 
     private final S3Client s3;
 
+    @Value("${image.file.prefix}")
+    private String urlPrefix;
+
     @Value("${aws.s3.bucket.name}")
     private String bucket;
 
@@ -43,8 +46,6 @@ public class BoardService {
         if(files != null) {
             for(int i = 0; i < files.length; i++) {
                 fileMapper.insert(board.getId(), files[i].getOriginalFilename());
-                // would have to upload files to S3 bucket
-                // but local for now
                 upload(board.getId(), files[i]);
             }
         }
@@ -54,7 +55,7 @@ public class BoardService {
     private void upload(Integer boardId, MultipartFile file) throws IOException {
         // C:\Temp\prj1\boardId\fileName
 
-        String key = "prj1" + boardId + "/" + file.getOriginalFilename();
+        String key = "prj1/" + boardId + "/" + file.getOriginalFilename();
 
         PutObjectRequest objectRequest = PutObjectRequest.builder()
                 .bucket(bucket)
@@ -112,7 +113,13 @@ public class BoardService {
     }
 
     public Board get(Integer id) {
-        return mapper.selectById(id);
+        Board board = mapper.selectById(id);
+        List<String> fileNames = fileMapper.selectNameByBoardId(id);
+        fileNames = fileNames.stream()
+                .map(name -> urlPrefix + "prj1/" + id + "/" + name)
+                .toList();
+        board.setFileNames(fileNames);
+        return board;
     }
 
     public boolean remove(Integer id) {
