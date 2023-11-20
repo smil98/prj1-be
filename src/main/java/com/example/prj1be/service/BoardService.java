@@ -1,6 +1,7 @@
 package com.example.prj1be.service;
 
 import com.example.prj1be.domain.Board;
+import com.example.prj1be.domain.BoardFile;
 import com.example.prj1be.domain.Member;
 import com.example.prj1be.mapper.BoardMapper;
 import com.example.prj1be.mapper.CommentMapper;
@@ -114,11 +115,15 @@ public class BoardService {
 
     public Board get(Integer id) {
         Board board = mapper.selectById(id);
-        List<String> fileNames = fileMapper.selectNameByBoardId(id);
-        fileNames = fileNames.stream()
-                .map(name -> urlPrefix + "prj1/" + id + "/" + name)
-                .toList();
-        board.setFileNames(fileNames);
+        List<BoardFile> boardFiles = fileMapper.selectNameByBoardId(id);
+
+        for(BoardFile boardFile : boardFiles) {
+            String url = urlPrefix + "prj1/" + id + "/" + boardFile.getName();
+            boardFile.setUrl(url);
+        }
+
+        board.setFiles(boardFiles);
+
         return board;
     }
 
