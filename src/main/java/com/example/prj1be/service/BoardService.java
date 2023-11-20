@@ -37,8 +37,6 @@ public class BoardService {
     @Value("${aws.s3.bucket.name}")
     private String bucket;
 
-
-
     public boolean save(Board board, MultipartFile[] files, Member login) throws IOException {
         board.setWriter(login.getId());
         int cnt = mapper.insert(board);
