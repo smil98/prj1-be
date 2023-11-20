@@ -8,6 +8,7 @@ import com.example.prj1be.mapper.FileMapper;
 import com.example.prj1be.mapper.LikeMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -18,39 +19,38 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(rollbackFor = Exception.class)
 public class BoardService {
 
-//    private final MemberService memberService;
     private final BoardMapper mapper;
     private final CommentMapper commentMapper;
     private final LikeMapper likeMapper;
     private final FileMapper fileMapper;
 
-    public boolean save(Board board, MultipartFile[] files, Member login) {
+    public boolean save(Board board, MultipartFile[] files, Member login) throws IOException {
         board.setWriter(login.getId());
         int cnt = mapper.insert(board);
         if(files != null) {
             for(int i = 0; i < files.length; i++) {
                 fileMapper.insert(board.getId(), files[i].getOriginalFilename());
+                // would have to upload files to S3 bucket
+                // but local for now
+                upload(board.getId(), files[i]);
             }
         }
         return cnt==1;
     }
 
-    private void upload(Integer boardId, MultipartFile file) {
+    private void upload(Integer boardId, MultipartFile file) throws IOException {
         // C:\Temp\prj1\boardId\fileName
 
-        try {
             File folder = new File("C:\\Temp\\prj1\\" + boardId);
             if(!folder.exists()) {
                 folder.mkdirs();
             }
             String path = folder.getAbsolutePath() +  "\\" + file.getOriginalFilename();
             File des = new File(path);
-                file.transferTo(des);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+            file.transferTo(des);
     }
 
     public boolean validate(Board board) {
