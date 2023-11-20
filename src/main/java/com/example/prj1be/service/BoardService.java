@@ -4,10 +4,14 @@ import com.example.prj1be.domain.Board;
 import com.example.prj1be.domain.Member;
 import com.example.prj1be.mapper.BoardMapper;
 import com.example.prj1be.mapper.CommentMapper;
+import com.example.prj1be.mapper.FileMapper;
 import com.example.prj1be.mapper.LikeMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,10 +24,33 @@ public class BoardService {
     private final BoardMapper mapper;
     private final CommentMapper commentMapper;
     private final LikeMapper likeMapper;
+    private final FileMapper fileMapper;
 
-    public boolean save(Board board, Member login) {
+    public boolean save(Board board, MultipartFile[] files, Member login) {
         board.setWriter(login.getId());
-        return mapper.insert(board)==1;
+        int cnt = mapper.insert(board);
+        if(files != null) {
+            for(int i = 0; i < files.length; i++) {
+                fileMapper.insert(board.getId(), files[i].getOriginalFilename());
+            }
+        }
+        return cnt==1;
+    }
+
+    private void upload(Integer boardId, MultipartFile file) {
+        // C:\Temp\prj1\boardId\fileName
+
+        try {
+            File folder = new File("C:\\Temp\\prj1\\" + boardId);
+            if(!folder.exists()) {
+                folder.mkdirs();
+            }
+            String path = folder.getAbsolutePath() +  "\\" + file.getOriginalFilename();
+            File des = new File(path);
+                file.transferTo(des);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public boolean validate(Board board) {
@@ -43,11 +70,11 @@ public class BoardService {
     }
 
 
-    public Map<String, Object> list(Integer page) {
+    public Map<String, Object> list(Integer page, String keyword) {
         Map<String, Object> map = new HashMap<>();
         Map<String, Object> pageInfo = new HashMap<>();
 
-        int countAll = mapper.countAll();;
+        int countAll = mapper.countAll("%" + keyword + "%");;
         int lastPageNumber = (countAll - 1) / 10 + 1;
         int startPageNumber = (page - 1) / 10 * 10 + 1;
         int endPageNumber = startPageNumber + 9;
@@ -67,7 +94,7 @@ public class BoardService {
         }
 
         int from = (page - 1) * 10;
-        map.put("boardList", mapper.selectAll(from));
+        map.put("boardList", mapper.selectAll(from, "%" + keyword + "%"));
         map.put("pageInfo", pageInfo);
         return map;
     }

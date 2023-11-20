@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,8 @@ public class BoardController {
     private final BoardService service;
 
     @PostMapping("add")
-    public ResponseEntity add(@RequestBody Board board,
+    public ResponseEntity add(Board board,
+                              @RequestParam(value = "files[]", required = false) MultipartFile[] files,
                               @SessionAttribute(value="login", required = false) Member login) {
 
         if(login == null) {
@@ -30,7 +32,7 @@ public class BoardController {
             return ResponseEntity.badRequest().build();
         }
 
-        if(service.save(board, login)) {
+        if(service.save(board, files, login)) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.internalServerError().build();
@@ -38,8 +40,10 @@ public class BoardController {
     }
 
     @GetMapping("list")
-    public Map<String, Object> list(@RequestParam(value="p", defaultValue = "1") Integer page) {
-        return service.list(page);
+    public Map<String, Object> list(@RequestParam(value="p", defaultValue = "1") Integer page,
+                                    @RequestParam(value = "k", defaultValue = "") String keyword) {
+
+        return service.list(page, keyword);
     }
 
     @GetMapping("id/{id}")

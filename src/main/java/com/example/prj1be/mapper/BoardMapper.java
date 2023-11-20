@@ -12,6 +12,7 @@ public interface BoardMapper {
     INSERT INTO board(title, content, writer)
     VALUES (#{title}, #{content}, #{writer})
     """)
+    @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(Board board);
 
     @Select("""
@@ -20,16 +21,18 @@ public interface BoardMapper {
         b.writer,
         m.nickName, 
         b.inserted,
-        COUNT(DISTINCT c.id) countComment
+        COUNT(DISTINCT c.id) countComment,
         COUNT(DISTINCT l.id) countLike
         FROM board b JOIN member m ON b.writer = m.id
         LEFT JOIN comment c ON b.id = c.boardId
         LEFT JOIN boardLike l ON b.id = l.boardId
+        WHERE b.content LIKE #{keyword}
+           OR b.title LIKE #{keyword}
         GROUP BY b.id
         ORDER BY b.id DESC
         LIMIT #{from}, 10
         """)
-    List<Board> selectAll(Integer from);
+    List<Board> selectAll(Integer from, String keyword);
 
     @Select("""
     SELECT b.id, 
@@ -72,7 +75,9 @@ public interface BoardMapper {
     List<Integer> selectIdListByMemberId(String writer);
 
     @Select("""
-    SELECT COUNT(*) FROM board;
+    SELECT COUNT(*) FROM board
+    WHERE title LIKE #{keyword}
+    OR content LIKE #{keyword}
     """)
-    int countAll();
+    int countAll(String keyword);
 }
