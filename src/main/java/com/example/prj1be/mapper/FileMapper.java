@@ -34,7 +34,7 @@ public interface FileMapper {
     <script>
     DELETE FROM boardFile
     WHERE boardId = #{boardId}
-    <if test="fileName != '*'">
+    <if test='fileName != "*"'>
         AND name = #{fileName}
     </if>
     </script>

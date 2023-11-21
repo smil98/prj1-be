@@ -159,7 +159,6 @@ public class BoardService {
         if(selectedImages != null) {
             for (String fileName : selectedImages) {
                 String key = "prj1/" + board.getId() + "/" + fileName;
-                System.out.println("key = " + key);
                 DeleteObjectRequest objectRequest = DeleteObjectRequest.builder()
                         .bucket(bucket)
                         .key(key)
