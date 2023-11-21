@@ -42,9 +42,10 @@ public class BoardController {
 
     @GetMapping("list")
     public Map<String, Object> list(@RequestParam(value="p", defaultValue = "1") Integer page,
-                                    @RequestParam(value = "k", defaultValue = "") String keyword) {
+                                    @RequestParam(value = "k", defaultValue = "") String keyword,
+                                    @RequestParam(value="c", defaultValue = "all") String category) {
 
-        return service.list(page, keyword);
+        return service.list(page, keyword, category);
     }
 
     @GetMapping("id/{id}")
@@ -72,7 +73,9 @@ public class BoardController {
     }
 
     @PutMapping("edit")
-    public ResponseEntity edit(Board board, @RequestParam(value="selectedImages[]", required = false) List<String> selectedImages,
+    public ResponseEntity edit(Board board,
+                               @RequestParam(value="selectedImages[]", required = false) List<String> selectedImages,
+                               @RequestParam(value = "uploadFiles[]", required = false) MultipartFile[] uploadFiles,
                                @SessionAttribute(value = "login", required = false) Member login) {
 
         System.out.println("board = " + board);
@@ -87,7 +90,7 @@ public class BoardController {
         }
 
         if (service.validate(board)) {
-            if (service.update(board, selectedImages)) {
+            if (service.update(board, selectedImages, uploadFiles)) {
                 return ResponseEntity.ok().build();
             } else {
                 return ResponseEntity.internalServerError().build();

@@ -86,11 +86,11 @@ public class BoardService {
     }
 
 
-    public Map<String, Object> list(Integer page, String keyword) {
+    public Map<String, Object> list(Integer page, String keyword, String category) {
         Map<String, Object> map = new HashMap<>();
         Map<String, Object> pageInfo = new HashMap<>();
 
-        int countAll = mapper.countAll("%" + keyword + "%");;
+        int countAll = mapper.countAll("%" + keyword + "%", category);;
         int lastPageNumber = (countAll - 1) / 10 + 1;
         int startPageNumber = (page - 1) / 10 * 10 + 1;
         int endPageNumber = startPageNumber + 9;
@@ -110,7 +110,7 @@ public class BoardService {
         }
 
         int from = (page - 1) * 10;
-        map.put("boardList", mapper.selectAll(from, "%" + keyword + "%"));
+        map.put("boardList", mapper.selectAll(from, "%" + keyword + "%", category));
         map.put("pageInfo", pageInfo);
         return map;
     }
@@ -155,7 +155,7 @@ public class BoardService {
         fileMapper.deleteByBoardId(id);
     }
 
-    public boolean update(Board board, List<String> selectedImages) {
+    public boolean update(Board board, List<String> selectedImages, MultipartFile[] uploadFiles) throws IOException {
         if(selectedImages != null) {
             for (String fileName : selectedImages) {
                 String key = "prj1/" + board.getId() + "/" + fileName;
@@ -165,6 +165,13 @@ public class BoardService {
                         .build();
                 s3.deleteObject(objectRequest);
                 fileMapper.deleteByFileNameAndBoardId(board.getId(), fileName);
+            }
+        }
+
+        if (uploadFiles != null) {
+            for (MultipartFile file : uploadFiles) {
+                upload(board.getId(), file);
+                fileMapper.insert(board.getId(), file.getOriginalFilename());
             }
         }
         return mapper.update(board)==1;
