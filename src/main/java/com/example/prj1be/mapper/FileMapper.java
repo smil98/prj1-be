@@ -29,4 +29,15 @@ public interface FileMapper {
     WHERE boardId = #{boardId}
     """)
     int deleteByBoardId(Integer boardId);
+
+    @Delete("""
+    <script>
+    DELETE FROM boardFile
+    WHERE boardId = #{boardId}
+    <if test='fileName != "*"'>
+        AND name = #{fileName}
+    </if>
+    </script>
+    """)
+    int deleteByFileNameAndBoardId(Integer boardId, String fileName);
 }

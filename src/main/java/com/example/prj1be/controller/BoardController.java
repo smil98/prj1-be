@@ -42,9 +42,10 @@ public class BoardController {
 
     @GetMapping("list")
     public Map<String, Object> list(@RequestParam(value="p", defaultValue = "1") Integer page,
-                                    @RequestParam(value = "k", defaultValue = "") String keyword) {
+                                    @RequestParam(value = "k", defaultValue = "") String keyword,
+                                    @RequestParam(value="c", defaultValue = "all") String category) {
 
-        return service.list(page, keyword);
+        return service.list(page, keyword, category);
     }
 
     @GetMapping("id/{id}")
@@ -73,13 +74,12 @@ public class BoardController {
 
     @PutMapping("edit")
     public ResponseEntity edit(Board board,
-                               @RequestParam(value = "removeFileIds[]", required = false) List<Integer> removeFileIds,
+                               @RequestParam(value="selectedImages[]", required = false) List<String> selectedImages,
                                @RequestParam(value = "uploadFiles[]", required = false) MultipartFile[] uploadFiles,
-                               @SessionAttribute(value = "login", required = false) Member login) {
+                               @SessionAttribute(value = "login", required = false) Member login) throws IOException {
 
         System.out.println("board = " + board);
-        System.out.println("removeFileIds = " + removeFileIds);
-        System.out.println("uploadFiles = " + uploadFiles);
+        System.out.println("selectedImages = " + selectedImages);
 
         if(login == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -90,7 +90,7 @@ public class BoardController {
         }
 
         if (service.validate(board)) {
-            if (service.update(board)) {
+            if (service.update(board, selectedImages, uploadFiles)) {
                 return ResponseEntity.ok().build();
             } else {
                 return ResponseEntity.internalServerError().build();
