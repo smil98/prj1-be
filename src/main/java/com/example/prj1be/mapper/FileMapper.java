@@ -18,7 +18,7 @@ public interface FileMapper {
     int insert(Integer boardId, String name);
 
     @Select("""
-    SELECT name
+    SELECT id, name
     FROM boardFile
     WHERE boardId = #{boardId}
     """)
