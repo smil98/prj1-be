@@ -34,8 +34,11 @@ public interface BoardMapper {
             <if test="category == 'all' or category == 'title'">
                         OR title LIKE #{keyword}
                     </if>
-                    <if test="category == 'all' or category == 'content'">
-                        OR content LIKE #{keyword}
+            <if test="category == 'all' or category == 'content'">
+                OR content LIKE #{keyword}
+            </if>
+            <if test="category == 'all' or category == 'nickName'">
+                OR nickName LIKE #{keyword}
             </if>
         </trim>
         GROUP BY b.id
@@ -86,14 +89,18 @@ public interface BoardMapper {
 
     @Select("""
     <script>
-        SELECT COUNT(*) FROM board
+        SELECT COUNT(*) 
+        FROM board b JOIN member m ON b.writer = m.id
         WHERE 
             <trim prefixOverrides="OR">
                 <if test="category == 'all' or category == 'title'">
-                    OR title LIKE #{keyword}
+                    OR b.title LIKE #{keyword}
                 </if>
                 <if test="category == 'all' or category == 'content'">
-                    OR content LIKE #{keyword}
+                    OR b.content LIKE #{keyword}
+                </if>
+                <if test="category == 'all' or category == 'nickName'">
+                    OR m.nickName LIKE #{keyword}
                 </if>
             </trim>
         </script>
