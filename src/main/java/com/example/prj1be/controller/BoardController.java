@@ -76,7 +76,7 @@ public class BoardController {
     public ResponseEntity edit(Board board,
                                @RequestParam(value="selectedImages[]", required = false) List<String> selectedImages,
                                @RequestParam(value = "uploadFiles[]", required = false) MultipartFile[] uploadFiles,
-                               @SessionAttribute(value = "login", required = false) Member login) {
+                               @SessionAttribute(value = "login", required = false) Member login) throws IOException {
 
         System.out.println("board = " + board);
         System.out.println("selectedImages = " + selectedImages);
