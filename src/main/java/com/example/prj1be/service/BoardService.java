@@ -148,7 +148,6 @@ public class BoardService {
                     .bucket(bucket)
                     .key(key)
                     .build();
-
             s3.deleteObject(objectRequest);
         }
 
@@ -156,7 +155,18 @@ public class BoardService {
         fileMapper.deleteByBoardId(id);
     }
 
-    public boolean update(Board board) {
+    public boolean update(Board board, List<String> selectedImages) {
+        if(selectedImages != null) {
+            for (String fileName : selectedImages) {
+                String key = "prj1/" + board.getId() + "/" + fileName;
+                DeleteObjectRequest objectRequest = DeleteObjectRequest.builder()
+                        .bucket(bucket)
+                        .key(key)
+                        .build();
+                s3.deleteObject(objectRequest);
+                fileMapper.deleteByFileNameAndBoardId(board.getId(), fileName);
+            }
+        }
         return mapper.update(board)==1;
     }
 

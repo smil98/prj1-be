@@ -72,8 +72,11 @@ public class BoardController {
     }
 
     @PutMapping("edit")
-    public ResponseEntity edit(@RequestBody Board board,
+    public ResponseEntity edit(Board board, @RequestParam(value="selectedImages[]", required = false) List<String> selectedImages,
                                @SessionAttribute(value = "login", required = false) Member login) {
+
+        System.out.println("board = " + board);
+        System.out.println("selectedImages = " + selectedImages);
 
         if(login == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -84,7 +87,7 @@ public class BoardController {
         }
 
         if (service.validate(board)) {
-            if (service.update(board)) {
+            if (service.update(board, selectedImages)) {
                 return ResponseEntity.ok().build();
             } else {
                 return ResponseEntity.internalServerError().build();
